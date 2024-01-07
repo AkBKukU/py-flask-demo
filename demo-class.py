@@ -17,6 +17,18 @@ class WebClass(object):
         self.app.add_url_rule('/my/cool/site/index.html','1', self.index)
         self.app.add_url_rule('/my/cool/site/data.json','2', self.data)
 
+        # Set headers for server
+        self.app.after_request(self.add_header)
+    
+    def add_header(self,r):
+        """
+        Force the page cache to be reloaded each time
+        """
+        r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        r.headers["Pragma"] = "no-cache"
+        r.headers["Expires"] = "0"
+        r.headers['Cache-Control'] = 'public, max-age=0'
+        return r
 
     def start(self):
         """ Run Flask in a process thread that is non-blocking """
@@ -39,10 +51,10 @@ class WebClass(object):
 
 if __name__ == '__main__': 
     web = WebClass()
-    web.connect()
+    web.start()
 
     input('press ENTER to close...\n')
 
-    web.disconnect()
+    web.stop()
 
 
